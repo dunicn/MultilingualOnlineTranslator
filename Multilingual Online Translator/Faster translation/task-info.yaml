@@ -1,0 +1,254 @@
+type: edu
+custom_name: stage6
+files:
+- name: translator/translator.py
+  visible: true
+  text: "import requests\nfrom bs4 import BeautifulSoup\nfrom requests.sessions import\
+    \ Session\n\ns = requests.Session()\n\nclass MultilingualTranslator:\n\n     \
+    \ # type: Session\n\n    def __init__(self):\n        self.native_language = \"\
+    \"\n        self.language_to_translate_to = \"\"\n        self.word_to_translate\
+    \ = \"\"\n        self.languages_dict = {\"1\": \"Arabic\", \"2\": \"German\"\
+    , \"3\": \"English\", \"4\": \"Spanish\", \"5\": \"French\", \"6\": \"Hebrew\"\
+    , \"7\": \"Japanese\", \"8\": \"Dutch\", \"9\": \"Polish\", \"10\": \"Portuguese\"\
+    , \"11\":  \"Romanian\", \"12\": \"Russian\", \"13\": \"Turkish\"}\n        self.translated_words_list\
+    \ = []\n        self.translated_examples_list = []\n\n    def user_language(self):\n\
+    \        print(\"Type the number of your language\")\n        user_input = int(input())\n\
+    \        self.native_language = self.languages_dict.get(str(user_input))\n\n \
+    \   def chosen_language(self):\n        print(\"Type the number of a language\
+    \ you want to translate to or '0' to translate to all languages:\")\n        user_input\
+    \ = int(input())\n        if user_input == 0:\n            # translate to all\
+    \ languages method\n            self.chosen_word()\n            self.translate_to_all_languages()\n\
+    \        else:\n            self.language_to_translate_to = self.languages_dict.get(str(user_input))\n\
+    \n    def translate_to_all_languages(self):\n        for elem in range(1, 14):\n\
+    \            if self.languages_dict.get(str(elem)) == self.native_language:\n\
+    \                continue\n            self.language_to_translate_to = self.languages_dict.get(str(elem))\n\
+    \            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X\
+    \ 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}\n\
+    \            result = s.get(self.url_generator(), headers=headers)\n         \
+    \   word_file = open(\"{}.txt\".format(self.word_to_translate.lower()), \"a\"\
+    , encoding=\"utf-8\")\n            if result.status_code == 200:\n           \
+    \     print()\n                print(\"{} Translations:\".format(self.language_to_translate_to))\n\
+    \                self.translated_words(result)\n                self.translated_examples(result)\n\
+    \                # print(self.translated_words_list)\n                print(self.translated_words_list[1])\n\
+    \                word_file.write(\"{} Translations:\".format(self.language_to_translate_to)\
+    \ + \"\\n\")\n                word_file.write(self.translated_words_list[1] +\
+    \ \"\\n \\n\")\n                print()\n                print(\"{} Examples:\"\
+    .format(self.language_to_translate_to))\n                print(self.translated_examples_list[0])\n\
+    \                print(self.translated_examples_list[1])\n                word_file.writelines(\"\
+    {} Examples:\".format(self.language_to_translate_to) + \"\\n\")\n            \
+    \    word_file.writelines(self.translated_examples_list[0] + \"\\n\")\n      \
+    \          word_file.writelines(self.translated_examples_list[1] + \"\\n \\n\"\
+    )\n                word_file.close()\n\n    def chosen_word(self):\n        print(\"\
+    Type the word you want to translate\")\n        self.word_to_translate = input()\n\
+    \n    def offer_print(self):\n        print(\"\"\"Hello, you're welcome to the\
+    \ translator. Translator supports: \n1. Arabic\n2. German\n3. English\n4. Spanish\n\
+    5. French\n6. Hebrew\n7. Japanese\n8. Dutch\n9. Polish\n10. Portuguese\n11. Romanian\n\
+    12. Russian\n13. Turkish\"\"\")\n\n    def main_menu(self):\n        self.offer_print()\n\
+    \        self.user_language()\n        # self.chosen_language()\n        print(\"\
+    Type the number of a language you want to translate to or '0' to translate to\
+    \ all languages:\")\n        user_input = int(input())\n        if user_input\
+    \ == 0:\n            # translate to all languages method\n            self.chosen_word()\n\
+    \            self.translate_to_all_languages()\n            exit()\n        else:\n\
+    \            self.language_to_translate_to = self.languages_dict.get(str(user_input))\n\
+    \        self.chosen_word()\n\n        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh;\
+    \ Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95\
+    \ Safari/537.36'}\n        result = requests.post(self.url_generator(), headers=headers)\n\
+    \        if result.status_code == 200:\n            print(\"200 OK\")\n      \
+    \      print()\n            print(\"Context examples:\")\n            print()\n\
+    \            print(\"{} Translations:\".format(self.language_to_translate_to))\n\
+    \            self.translated_words(result)\n            self.translated_examples(result)\n\
+    \            # print(self.translated_words_list)\n            for x in range(1,\
+    \ 6):\n                if x >= len(self.translated_words_list):\n            \
+    \        break\n                print(self.translated_words_list[x])\n       \
+    \     print()\n            print(\"{} Examples:\".format(self.language_to_translate_to))\n\
+    \            # for x in range(0, 10, 2):\n            #     print(\"{}:\".format(self.translated_examples_list[x]))\n\
+    \            #     print(self.translated_examples_list[x+2])\n            #  \
+    \   print()\n            for x in range(0, 10, 2):\n                for j in self.translated_examples_list[x:x+2]:\n\
+    \                    print(j)\n                print()\n            # print(\"\
+    \\n\\n\".join((\"\\n\".join(j for j in self.translated_examples_list[i:i+2]) for\
+    \ i in range(0,10,2))))\n\n    def translated_words(self, result):\n        src\
+    \ = result.content\n        soup = BeautifulSoup(src, \"lxml\")\n        words\
+    \ = soup.find_all(\"a\", {\"class\": \"translation\"})\n        # for word in\
+    \ words:\n        #     self.translated_words_list.append(word.text.strip())\n\
+    \n        self.translated_words_list = [i.text.strip().replace(\"[\", \"\").replace(\"\
+    ]\", \"\") for i in words]\n        # print(self.translated_words_list)\n\n  \
+    \  def translated_examples(self, result):\n        src = result.content\n    \
+    \    soup = BeautifulSoup(src, \"lxml\")\n        # sentences = soup.section(\"\
+    section\", {\"id\": \"examples-content\"})[0].find_all('span', {\"class\": \"\
+    text\"})\n        # for sentence in sentences:\n        #     self.translated_examples_list.append(sentence.text.strip())\n\
+    \        phrases = soup.select('#examples-content span.text')\n        self.translated_examples_list\
+    \ = [i.text.strip().replace(\"[\", \"\").replace(\"]\", \"\") for i in phrases]\n\
+    \n    def url_generator(self):\n        web_page = \"https://context.reverso.net/translation/\"\
+    \n        url = web_page + self.native_language.lower() + \"-\" + self.language_to_translate_to.lower()\
+    \ + \"/\" + self.word_to_translate\n        return url\n\n\ntest = MultilingualTranslator()\n\
+    test.main_menu()\n"
+  learner_created: false
+- name: tests.py
+  visible: false
+  text: |
+    from hstest.stage_test import StageTest
+    from hstest.test_case import TestCase
+    from hstest.check_result import CheckResult
+    import requests
+    from itertools import chain
+    from bs4 import BeautifulSoup
+    import sys
+    import os
+
+
+    if sys.platform.startswith("win"):
+        import _locale
+
+        # pylint: disable=protected-access
+        _locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
+
+    CheckResult.correct = lambda: CheckResult(True, '')
+    CheckResult.wrong = lambda feedback: CheckResult(False, feedback)
+
+
+    languages = ["arabic", "german", "english", "spanish", "french",
+                 "hebrew", "japanese", "dutch", "polish", "portuguese",
+                 "romanian", "russian", "turkish"]
+
+
+    class TranslatorTest(StageTest):
+        def generate(self):
+            return [
+                TestCase(args=['english', 'all', 'love'], attach='english\nall\nlove'),
+                TestCase(args=['spanish', 'english', 'derechos'], attach='spanish\nenglish\nderechos')
+            ]
+
+        def check_output(self, output, true_results):
+            output = output.lower()
+
+            for language in true_results:
+                translations_title = '{} translation'.format(language).lower()
+                if translations_title not in output:
+                    return False, 'The title \"{0} translation\" was not found.'.format(language)
+                examples_title = "{0} example".format(language).lower()
+                translations = output[output.index(translations_title):].strip()
+
+                if examples_title not in translations.lower():
+                    return False, 'The title \"{0}\" was not found.\n' \
+                                  'Make sure you output this title before example sentences for this language,\n' \
+                                  'and that you output it after translations for it.'.format(examples_title)
+
+                # the beginning of the section with context examples
+                examples_index = translations.index(examples_title)
+                try:
+                    # the end of the section with context examples
+                    examples_end = translations.index('translation', examples_index)
+                except ValueError:
+                    # if the language is last in the list, the end of the context examples is the end of the output
+                    examples_end = None
+                examples = translations[examples_index:examples_end].split('\n')
+                translations = translations[:examples_index].strip().split('\n')
+                examples = [line for line in examples if line and examples_title not in line]
+                translations = [line for line in translations if line and translations_title not in line]
+
+                if len(translations) == 0:
+                    return False, "No translations for {0} are found.\n" \
+                                  "Make sure that each translated word is placed in a new line\n" \
+                                  "and that translations precede examples.".format(language)
+
+                if len(examples) == 0:
+                    return False, "No context examples for {0} are found.\n" \
+                                  "Make sure that your context examples follow the translations\n" \
+                                  "and that each example is placed in a new line.".format(language)
+
+                true_translations, true_examples = true_results[language]
+
+                translations_intersection = [True for user_translation in translations
+                                             if user_translation in true_translations]
+                if not translations_intersection:
+                    return False, "No correct translations for {0} are found.\n" \
+                                  "Please, output the first found translation " \
+                                  "of the given word for this language if you output one translation.".format(language)
+
+                examples_intersection = [True for user_example in examples if user_example in true_examples]
+                if not examples_intersection:
+                    return False, "No correct examples for {0} are found.\n" \
+                                  "If you output only one example for each language,\n" \
+                                  "please, use the first example that you find on the web page.".format(language)
+
+            return True, ''
+
+        def check(self, reply, attach):
+            l1, l2, word = attach.split("\n")
+            result_dict = get_results(l1, l2, word)
+
+            file_name = word + '.txt'
+            if not os.path.exists(file_name):
+                return CheckResult.wrong("Looks like you didn't create a file named <word>.txt \n"
+                                         "where <word> is the word that should be translated.")
+
+            with open(file_name, 'r', encoding='utf-8') as fh:
+                try:
+                    output = fh.read()
+                except UnicodeDecodeError:
+                    return CheckResult.wrong("UnicodeDecodeError occurred while reading your file. \n"
+                                             "Perhaps you used the wrong encoding? Please, use utf-8 encoding.")
+
+            if output.lower() not in reply.lower():
+                return CheckResult.wrong("The output to the terminal does not seem to contain the content of the file.\n"
+                                         "Please make sure that you output the results to the terminal as well.")
+
+            is_correct, feedback = self.check_output(output, result_dict)
+            if not is_correct:
+                feedback = 'A problem occurred while reading the file that you created.\n' + feedback
+                return CheckResult.wrong(feedback)
+
+            try:
+                os.remove(file_name)
+            except:
+                return CheckResult.wrong("An error occurred while your file was being removed.\n"
+                                         "Please make sure that you close all the files after writing the results in them.")
+
+            return CheckResult.correct()
+
+
+    def get_results(l1, l2, word):
+        if l2 == 'all':
+            target_languages = [language for language in languages if language != l1]
+        else:
+            target_languages = [l2]
+
+        result_dict = {}
+
+        for lang_to in target_languages:
+            url = f"https://context.reverso.net/translation/{l1}-{lang_to}/{word}"
+            user_agent = 'Mozilla/5.0'
+            response = requests.get(url, headers={'User-Agent': user_agent})
+
+            raw_contents = BeautifulSoup(response.content, 'html.parser')
+            translations = raw_contents.find_all('a', {"class": 'translation'})
+            sentences_src, sentences_target = \
+                raw_contents.find_all('div', {"class": "src ltr"}), \
+                raw_contents.find_all('div', {"class": ["trg ltr", "trg rtl arabic", "trg rtl"]})
+
+            translation_list = [translation.get_text().strip().lower() for translation in translations]
+            sentence_list = [sentence.get_text().strip().lower() for sentence in
+                             list(chain(*[sentence_pair for sentence_pair in zip(sentences_src, sentences_target)]))]
+            result_dict[lang_to] = [set(translation_list), set(sentence_list)]
+
+        return result_dict
+
+
+    if __name__ == '__main__':
+        TranslatorTest('translator.translator').run_tests()
+  learner_created: false
+- name: translator/cat.txt
+  visible: true
+  learner_created: true
+- name: translator/hello.txt
+  visible: true
+  learner_created: true
+- name: translator/dog.txt
+  visible: true
+  learner_created: true
+feedback_link: https://hyperskill.org/projects/99/stages/548/implement#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 11 Dec 2020 10:00:27 UTC
+record: 6
